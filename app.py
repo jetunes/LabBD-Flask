@@ -131,7 +131,57 @@ def minhaparticipacao():
 	selecoes, participacao = db.getParticipacao(session['user'])
 	return render_template('pessoalParticipante.html', selecoes = selecoes, participacao = participacao)
 
+@app.route('/minhaarea/servidor/')
+def meuservidor():
+	if not session['user']:
+		return render_template('login.html')
 	
+	editais_abertos = db.getServidor(session['user'])
+	return render_template('pessoaServidor.html', editais_abertos= editais_abertos)
+
+@app.route('/registrar_proposta/', methods=['GET','POST'])
+def registrar_proposta(id_edital, tipo):
+	if request.method == 'POST':
+		areatematica_grandearea = request.form['areatematica_grandearea']
+		areatematica_areasecundaria = request.form['areatematica_areasecundaria']
+		areatematica_areaprincipal = request.form['areatematica_areaprincipal']
+		resumo = request.form['resumo']
+		descricao = request.form['descricao']
+		setor_responsavel = request.form['setor_responsavel']
+		abrangencia = request.form['abrangencia']
+		comunidade_atingida = request.form['comunidade_atingida']
+		publico_alvo = request.form['publico_alvo']
+		DataInicio = request.form['DataInicio']
+		DataFim = request.form['DataFim']
+		id_pessoa = session['user']
+
+		if not areatematica_grandearea:
+			flash('Falta areatematica_grandearea')
+		elif not areatematica_areasecundaria:
+			flash('Falta areatematica_areasecundaria')
+		elif not areatematica_areaprincipal:
+			flash('Falta areatematica_areaprincipal')
+		elif not resumo:
+			flash('Falta resumo')
+		elif not descricao:
+			flash('Falta descricao')
+		elif not setor_responsavel:
+			flash('Falta setor_responsavel')
+		elif not abrangencia:
+			flash('Falta abrangencia')
+		elif not comunidade_atingida:
+			flash('Falta comunidade_atingida')
+		elif not publico_alvo:
+			flash('Falta publico_alvo')
+		elif not DataInicio:
+			flash('Falta DataInicio')
+		elif not DataFim:
+			flash('Falta DataFim')
+		else:
+			id_proposta = db.criaProposta(id_pessoa, areatematica_grandearea, areatematica_areasecundaria, areatematica_areaprincipal, resumo, descricao, setor_responsavel, abrangencia, comunidade_atingida, publico_alvo, DataInicio, DataFim, id_edital, tipo)
+
+	return render_template('registrar_proposta.html', edital_1= id_edital, edital_2= tipo)
+
 @app.route('/registrar/', methods=['GET', 'POST'])
 def registrar():
 	if request.method == 'POST':

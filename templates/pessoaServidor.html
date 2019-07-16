@@ -26,15 +26,15 @@
 				</li>
 
 				<li class="py-2 md:my-0 hover:bg-orange-100 lg:hover:bg-transparent">
-					<a href="#" class="block pl-4 align-middle text-gray-700 no-underline hover:text-orange-500 border-l-4 border-transparent lg:border-orange-500 lg:hover:border-orange-500">
-						<span class="pb-1 md:pb-0 text-sm text-gray-900 font-bold">Área de Participante de Atividades</span>
+					<a href="{{ url_for('minhaparticipacao') }}" class="block pl-4 align-middle text-gray-700 no-underline hover:text-orange-500 border-l-4 border-transparent lg:hover:border-gray-200">
+						<span class="pb-1 md:pb-0 text-sm ">Área de Participante de Atividades</span>
 					</a>
 				</li>
 
 				{% if session['e_servidor'] > 0 %}
 				<li class="py-2 md:my-0 hover:bg-orange-100 lg:hover:bg-transparent">
-					<a href="{{ url_for('meuservidor') }}" class="block pl-4 align-middle text-gray-700 no-underline hover:text-orange-500 border-l-4 border-transparent lg:hover:border-gray-200">
-						<span class="pb-1 md:pb-0 text-sm">Área de Servidor</span>
+					<a href="#" class="block pl-4 align-middle text-gray-700 no-underline hover:text-orange-500 border-l-4 border-transparent lg:border-orange-500 lg:hover:border-orange-500">
+						<span class="pb-1 md:pb-0 text-sm text-gray-900 font-bold">Área de Servidor</span>
 					</a>
 				</li>
 				{% endif %}
@@ -55,34 +55,22 @@
 		<!--Title-->
 		<div class="font-sans">
 			<span class="text-base text-orange-500 font-bold">&laquo; <a href=" {{ url_for('index') }} " class="text-base md:text-sm text-orange-500 font-bold no-underline hover:underline">Voltar ao início</a></span>
-			<h1 class="font-sans break-normal text-gray-900 pt-6 pb-2 text-xl">Atividades Inscritas e Participadas</h1>
 			<hr class="border-b border-gray-400">
 		</div>
 
-		<h2 class="font-sans break-normal pt-4 text-xl">Fase de seleção</h2>
-		{% for selecao in selecoes %}
-		<div class="bg-white pt-4 mb-6 mt-6">
-			<div class="pt-2 mb-2">
-				<p class="font-sans"> {{ selecao[0]}} <br> <span class="text-xs font-bold text-gray-900">Código de Seleção #{{ selecao[1] }}</span></p>
-				{% if selecao[2] %}
-				<p>Declaração de presença: {{selecao[2]}}</p>
-				<p class="text-lg">Resultado inicial {% if selecao[3] %} APROVADO {% endif %}</p>
-				
-				{% else %}
-				Sem dados sobre presença e resultado inicial
-				{% endif %}
-			</div>
-		</div>
-		{% endfor %}
-
-		<h2 class="font-sans break-normal pt-4 text-xl">Atividades Participantes</h2>
+		<h2 class="font-sans break-normal pt-4 text-xl">Editais abertos</h2>
 		<p class="text-xs text-gray-700">Clique para mais informações</p>
-		{% for part in participacao %}
+		{% for edital in editais_abertos %}
 		<div class="bg-white pt-1">
 			<div class="pt-2 mb-2">
-				<a href=" {{ url_for('participanteInfos', id_atividade= part[1]) }} " class="text-base md:text-sm hover:text-orange-500 font-bold no-underline hover:underline"> <p class="font-sans"> {{ part[0] }} </p> </a>
+				<a href=" {{ url_for('editaisDetalhes', id_edital= edital[4]) }} " class="text-base md:text-sm hover:text-orange-500 font-bold no-underline hover:underline"> <p class="font-sans"> {{ edital[0] }} </p> </a>
+			</div>
+			<div class="pt-2 mb-2">
+				<a href=" {{ url_for('registrar_proposta', id_edital= edital[4], tipo= edtail[1]) }} " class="text-base md:text-sm hover:text-orange-500 font-bold no-underline hover:underline"> <p class="font-sans"> Se inscrever </p> </a>
 			</div>
 		</div>
+		
+
 		{% endfor %}
 		
 

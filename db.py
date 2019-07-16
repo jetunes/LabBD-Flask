@@ -1,9 +1,11 @@
 import os
 import psycopg2
 from flask import current_app, g
+from datetime import date
 
 DATABASE_URL = os.environ['DATABASE_URL']
 conn = psycopg2.connect(DATABASE_URL)
+
 
 def initDB():
 	print("Criando todas as tabelas...")
@@ -207,3 +209,27 @@ def inscreverAtividade(id_pessoa, id_atividade):
 	cur.execute("INSERT INTO Participante (id_pessoa, nro_extensao, frequencia, avaliacao) VALUES (%s,  %s, null, null);", [id_pessoa, id_atividade])
 	conn.commit()
 
+def getServidor(id_pessoa):
+	cur = conn.cursor()
+	
+	cur.execute("SELECT E.titulo, E.tipo, E.data_abertura, E.data_encerramento , E.codigo FROM edital E WHERE E.data_encerramento > %s;", [date.today()])
+	editais_abertos = cur.fetchall()
+	
+	return editais_abertos
+
+
+def criaProposta(id_pessoa, areatematica_grandearea, areatematica_areasecundaria, areatematica_areaprincipal, resumo, descricao, setor_responsavel, abrangencia, comunidade_atingida, publico_alvo, DataInicio, DataFim, id_edital, tipo):
+	curs = conn.cursor()
+	curs.execute("ROLLBACK")
+	conn.commit()
+
+	cur.execute("SELECT id_departamento, nro_ufscar, data_contratacao FROM PessoaServidor WHERE id_pessoa = %s;", [id_pessoa])
+	iddepNroData = cur.fetchone()
+	
+	id_novo = -1
+	with conn.cursor() as cur:
+		cur.execute("INSERT INTO Proposta (status, id_pessoa, id_departamento, codigo_edital, nro_processo, tipo, areatematica_grandearea, areatematica_areasecundaria, areatematica_areaprincipal, resumo, comunidade_atingida, publico_alvo, DataFim, DataInicio, descricao, setor_responsavel, abrangencia) VALUES ('em andamento', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id_proposta;", [id_pessoa, iddepNroData[0], id_pessoa, id_pessoa, tipo, areatematica_grandearea, areatematica_areasecundaria, areatematica_areaprincipal, resumo, comunidade_atingida, publico_alvo, DataFim, DataInicio, descricao, setor_responsavel, abrangencia])
+		#cur.execute("SELECT id_pessoa FROM Pessoa WHERE nome = %s", [nome])
+		id_novo = cur.fetchone()[0]
+	conn.commit()
+	return id_novo
