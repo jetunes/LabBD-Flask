@@ -3,8 +3,14 @@ import psycopg2
 from flask import current_app, g
 from datetime import date
 
-DATABASE_URL = os.environ['DATABASE_URL']
-conn = psycopg2.connect(DATABASE_URL)
+#DATABASE_URL = os.environ['DATABASE_URL']
+#conn = psycopg2.connect(DATABASE_URL)
+
+conn = psycopg2.connect(
+    database = 'labbd',
+    user = 'postgres',
+    password = 'postgres',
+)
 
 
 def initDB():
